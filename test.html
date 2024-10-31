@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+
+	<!-- Bootstrap CSS -->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+	
+	<!-- Optional JavaScript -->
+	<!-- jQuery, Popper.js (Bootstrap's dependency), and Bootstrap JS -->
+	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@2.9.2/dist/umd/popper.min.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <title>じゃんけん</title>
+</head>
+<body>
+    <header>
+        <h1>じゃんけん</h1>
+
+        <p>
+        <!-- クリックした場合に、play関数を実行してrock,scissors,paperの引数を渡す -->
+            <button onclick="play(`rock`)" class="btn btn-primary">グー</button>
+            <button onclick="play('scissors')" class="btn btn-success">チョキ</button>
+            <button onclick="play('paper')" class="btn btn-warning">パー</button>
+        </p>
+    </header>
+
+    <main>
+        <h2>ボタンを押してください</h2>
+	
+	<p>コンピューターの手</p>
+    <!-- コンピュータの選択を表示するための画像 -->
+	<img id="computerChoiceImg" width="150" src="">
+
+	<p>あなたの手</p>
+    <!-- ユーザーの選択を表示するための画像 -->
+	<img id="yourChoiceImg" width="150" src="">
+	
+	<div id="history"></div>
+
+	<!-- ジャンケンに関するギミックを記述 -->
+	<script th:src="@{/js/janken.js}"></script>
+
+    </main>
+
+    <footer>
+
+    </footer>
+
+    <script>
+        function play(userChoice) {
+    // 利用可能な選択肢を配列として定義
+    const choices = [`rock`, `scissors`, `paper`];
+
+    // コンピュータの選択をランダムに決定
+    const computerChoice = choices[Math.floor(Math.random() * 3)];
+
+    let result = ``;
+
+    // ユーザとコンピュータの選択を比較して結果を判定
+    if (userChoice === computerChoice) {
+        result = `引き分け！`;
+    } else if (
+        (userChoice === `rock` && computerChoice === `scissors`) ||
+        (userChoice === `scissors` && computerChoice === `paper`) ||
+        (userChoice === `paper` && computerChoice === `rock`)
+    ) {
+        result = `あなたの勝ち！`;
+    } else {
+        result = `あなたの負け…`;
+    }
+
+    // 
+    
+    // 英語の選択を日本語に変換するためのマッピングオブジェクト
+    const choiceMapping = {
+        'rock' : 'グー',
+        'scissors' : 'チョキ',
+        'paper' : 'パー'
+    };
+
+    // マッピングオブジェクトとは、
+    //ある値と別の値を対応させるためのオブジェクトです。
+    // 例えば、英語と日本語を対応させたい場合、
+    // マッピングオブジェクトを使って
+    // {'apple': 'りんご', 'banana': 'バナナ'} のように記述します。
+    // これで、「apple」を入れると「りんご」が返ってくるようになります。
+    // これは、異なる２つの情報を簡単に対応させるのに非常に便利な方法です。
+
+    // 選択に対応する画像のURLを保持するオブジェクト
+    const choiceImage = {
+        'rock':`/img/1.png`,
+        'scissors':'/img/2.png',
+        'paper':'/img/3.png'
+    };
+
+    // コンピュータの選択を日本語に変換
+    const computerChoicejapanese = choiceMapping[computerChoice];
+    // choiceMapping[computerChoice] は、
+    // computerChoice で指定されたキーに対応する値を 
+    // choiceMapping オブジェクトから取得します。
+    // つまり、コンピュータの選んだ手が英語で rock ならば、
+    // choiceMapping[rock] として グー を取得することになります。
+
+    // 結果テキストの作成
+    const resultText = `コンピューターの選択： ${computerChoicejapanese}.　結果: ${result}`;
+    // バッククォート（``）で囲まれた文字列内で、
+    // ドル記号と波括弧（${}）を使うことで変数の値を埋め込むことができます。
+
+    // ユーザの選択を画像で表示
+    const yourChoiceImg = document.getElementById(`yourChoiceImg`);
+    // yourChoiceImgというID属性を持ったタグを使用できるように代入する
+    yourChoiceImg.src = choiceImage[userChoice];
+
+    // コンピュータの選択を画像で表示
+    const computerChoiceImg = document.getElementById(`computerChoiceImg`);
+    computerChoiceImg.src = choiceImage[computerChoice];
+
+    // 結果を履歴として追加
+    const historyElement = document.createElement('p');
+    historyElement.innerText = resultText;
+
+    // 履歴をDOMに追加
+    const addHistory = document.getElementById('history');
+    addHistory.appendChild(historyElement); 
+}
+
+
+
+    </script>
+   
+
+	
+</body>
+</html>
+
